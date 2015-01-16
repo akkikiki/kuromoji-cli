@@ -1,3 +1,4 @@
+import org.apache.commons.cli.*;
 import org.atilika.kuromoji.Token;
 import org.atilika.kuromoji.Tokenizer;
 
@@ -7,8 +8,23 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 public class KuromojiCLI {
-    public static void main(String[] args) throws IOException {
-        Tokenizer tokenizer = Tokenizer.builder().build();
+
+    public static void main(String[] args) throws IOException, ParseException {
+
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        options.addOption("u", "userDic", true, "select a path to user dictionary");
+
+        CommandLine commandLine = null;
+        try {
+            commandLine = parser.parse(options, args);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Tokenizer tokenizer = Tokenizer.builder()
+                .userDictionary(commandLine.getOptionValue("u"))
+                .build();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1);
 
         String line;
